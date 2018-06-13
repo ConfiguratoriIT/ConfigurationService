@@ -1,12 +1,11 @@
 package org.freeplane.plugin.script;
 
-import groovy.lang.Binding;
-import groovy.lang.MetaClass;
-import groovy.lang.MissingMethodException;
-import groovy.lang.MissingPropertyException;
-import groovy.lang.Script;
-
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +28,14 @@ import org.freeplane.features.format.ScannerController;
 import org.freeplane.features.link.LinkController;
 import org.freeplane.plugin.script.proxy.Convertible;
 import org.freeplane.plugin.script.proxy.Proxy;
+import org.freeplane.plugin.script.proxy.ScriptUtils;
+import org.sqlite.SQLiteDataSource;
+
+import groovy.lang.Binding;
+import groovy.lang.MetaClass;
+import groovy.lang.MissingMethodException;
+import groovy.lang.MissingPropertyException;
+import groovy.lang.Script;
 
 /** All methods of this class are available as "global" methods in every script.
  * Only documented methods are meant to be used in scripts.
@@ -284,4 +291,108 @@ public abstract class FreeplaneScriptBaseClass extends Script {
 //	public Convertible convertible(String string) {
 //		return new Convertible(FormulaUtils.eval string, node.get);
 //	}
+ // FAGOR
+    private SQLiteDataSource dataSource;
+    private Connection connection;
+    private String pathDb = "";
+    
+    public Connection sqliteSetUrl(final String p_path_db) {
+    	
+    	if (dataSource == null || connection == null || !pathDb.equals(p_path_db)) {
+    		dataSource.setUrl("jdbc:sqlite:" + p_path_db);
+	    	try {
+	    		dataSource = new SQLiteDataSource();
+	    		connection = dataSource.getConnection();
+	    	} catch(SQLException e) {
+	    		System.out.println( e.getClass().getName() + ": " + e.getMessage() );
+	            e.printStackTrace();
+	    	}
+	    	pathDb = p_path_db;
+    	}
+    	return connection;
+    	
+    	//connection = ScriptUtils.c().sqliteSetUrl(p_path_db); 
+    	//return connection;
+    }
+    
+    public ResultSet executeQuery(final String p_query) {
+    	ResultSet executeQuery = null; 
+    	try {
+    		executeQuery = connection.createStatement().executeQuery(p_query);
+    	} catch(SQLException e) {
+    		System.out.println( e.getClass().getName() + ": " + e.getMessage() );
+            e.printStackTrace();
+    	}
+    	return executeQuery;
+    }
+    
+    public Connection m_SQL_conn() {
+    	return connection;
+    }
+    
+    public String m_SQL_query(String db_file, String p_sql, String p_col) {
+    	sqliteSetUrl(db_file);
+    	ResultSet rs = executeQuery(p_sql);
+    	String pippo = "";
+    	try {
+    		if (rs.next()) {
+    			pippo = rs.getString(p_col);
+    		}
+    	} catch (SQLException e) {
+    		pippo = e.getMessage();
+    		System.out.println( e.getClass().getName() + ": " + e.getMessage() );
+            e.printStackTrace();
+    	}	 
+    	return pippo;
+    }
+    
+    public ArrayList<String> m_SQL_query_mult(String db_file, String p_sql, String p_col) {
+    	sqliteSetUrl(db_file);
+    	ResultSet rs = executeQuery(p_sql);
+        ArrayList<String> l_lst = new ArrayList<String>();
+    	try {
+    		while (rs.next()) {
+                System.out.println("\tout: "+rs.getString(p_col));   
+                l_lst.add(rs.getString(p_col));
+                
+    		}
+    	} catch (SQLException e) {
+    		System.out.println( e.getClass().getName() + ": " + e.getMessage() );
+            e.printStackTrace();
+    	}	 
+    	return l_lst;
+    }
+
+    public  ArrayList<String[]> m_SQL_query_mult(String p_path_db, String p_query) {
+    	ArrayList l_lst=null;
+        try {
+            
+            long l_t0 = System.currentTimeMillis();
+            sqliteSetUrl(p_path_db);
+            
+            long l_t1 = System.currentTimeMillis();
+            ResultSet l_rs = executeQuery(p_query);
+            ResultSetMetaData l_rsmd = l_rs.getMetaData(); 
+            int l_columnCount = l_rsmd.getColumnCount();
+            l_lst = new ArrayList();	
+
+            while (l_rs.next()) {
+                    int i = 1;
+                    String[] l_strs = new String[l_columnCount];
+                    while(i <= l_columnCount) {
+                            l_strs[i-1]=l_rs.getString(i++);
+                    }			
+                    l_lst.add(l_strs);
+            }
+            
+            long l_t2 = System.currentTimeMillis();
+            System.out.println("Dt1 (connessione)=" + (l_t1 - l_t0) + ". Dt2 (totale)=" + (l_t2 - l_t0));
+            
+        } catch (Exception e) {
+            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            l_lst = null;
+        }
+        return l_lst;
+    }
 }
