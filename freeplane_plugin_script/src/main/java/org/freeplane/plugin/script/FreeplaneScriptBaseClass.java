@@ -29,7 +29,7 @@ import org.freeplane.features.link.LinkController;
 import org.freeplane.plugin.script.proxy.Convertible;
 import org.freeplane.plugin.script.proxy.Proxy;
 import org.freeplane.plugin.script.proxy.ScriptUtils;
-import org.sqlite.SQLiteDataSource;
+//import org.sqlite.SQLiteDataSource;
 
 import groovy.lang.Binding;
 import groovy.lang.MetaClass;
@@ -292,6 +292,7 @@ public abstract class FreeplaneScriptBaseClass extends Script {
 //		return new Convertible(FormulaUtils.eval string, node.get);
 //	}
  // FAGOR
+    /*
     private SQLiteDataSource dataSource;
     private Connection connection;
     private String pathDb = "";
@@ -394,5 +395,5 @@ public abstract class FreeplaneScriptBaseClass extends Script {
             l_lst = null;
         }
         return l_lst;
-    }
+    }*/
 }
