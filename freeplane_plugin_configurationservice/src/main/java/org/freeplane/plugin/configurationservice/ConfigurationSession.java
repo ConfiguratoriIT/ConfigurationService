@@ -1,6 +1,5 @@
 package org.freeplane.plugin.configurationservice;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,7 @@ public class ConfigurationSession {
 	}
 
 	public void start(String mindmapfile) {
-		File templateFile = new File(mindmapfile);
-		newHiddenMapFromTemplate = c.newHiddenMapFromTemplate(templateFile);
+		newHiddenMapFromTemplate = c.load(mindmapfile).getMap();
 	}
 
 	public boolean isStarted() {
