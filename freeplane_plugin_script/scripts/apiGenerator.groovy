@@ -7,8 +7,9 @@
 // (at your option) any later version.
 
 import java.lang.reflect.Method
-import java.lang.reflect.TypeVariable
 
+import org.freeplane.api.Loader
+import org.freeplane.core.resources.ResourceController
 import org.freeplane.core.ui.components.UITools
 import org.freeplane.core.util.FreeplaneVersion
 import org.freeplane.core.util.HtmlUtils
@@ -18,13 +19,10 @@ import org.freeplane.plugin.script.FreeplaneScriptBaseClass
 import org.freeplane.plugin.script.proxy.Convertible
 import org.freeplane.plugin.script.proxy.Proxy
 import org.freeplane.plugin.script.proxy.ScriptUtils
-import org.freeplane.core.resources.ResourceController
 
-
-// FIXME: api is installed locally but is there a portable way to find it?
 URI getApiLink(String path) {
     try {
-        def apiBase = path.startsWith('org/freeplane') ? 'http://freeplane.sourceforge.net/doc/api'
+        def apiBase = path.startsWith('org/freeplane') ? freeplaneApiBase
                 : 'http://groovy.codehaus.org/groovy-jdk'
         return new URI(apiBase + '/' + path)
     } catch (Exception e) {
@@ -160,7 +158,7 @@ def formatProperty(String property, String type, String mode) {
 }
 
 def formatMethodKey(Method method) {
-		return method.name + 
+		return method.name +
 			'(' + method.parameterTypes.collect{ typeToString(it) }.join(', ') + ')'
 
 }
@@ -232,6 +230,7 @@ def createChild(Proxy.Node parent, text, link) {
 }
 
 // == MAIN ==
+this.freeplaneApiBase = new File(ResourceController.resourceController.installationBaseDir).toURI().toString() + '/doc/api';
 def MAP_NAME = textUtils.getText('scripting_api_generator_title')
 def PROXY_NODE = textUtils.getText('scripting_api_generator_proxy')
 def UTILITES_NODE = textUtils.getText('scripting_api_generator_utilities')
@@ -257,6 +256,7 @@ makeApi(proxy, Proxy.Attributes.class)
 makeApi(proxy, Proxy.Cloud.class)
 makeApi(proxy, Proxy.Connector.class)
 makeApi(proxy, Proxy.Controller.class)
+makeApi(proxy, Loader.class)
 makeApi(proxy, Proxy.Edge.class)
 makeApi(proxy, Proxy.ExternalObject.class)
 makeApi(proxy, Proxy.Font.class)

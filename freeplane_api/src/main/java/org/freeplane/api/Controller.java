@@ -68,37 +68,45 @@ public interface Controller extends ControllerRO, HeadlessMapCreator {
 	@Deprecated
 	void setStatusInfo(String infoPanelKey, Icon icon);
 
-	/** 
-	 * @deprecated since 1.6.16 - use {@link #openMap()}
+	/**
+	 * Returns {@link Loader} for accessing or loading map from file.
+	 *
+	 * @since 1.6.16
+	 */
+	@Override
+	Loader load(File file);
+
+	/**
+	 * Returns {@link Loader} for accessing or loading map from URL.
+	 *
+	 * @since 1.6.16
+	 */
+	@Override
+	Loader load(URL file);
+
+	/**
+	 * Returns {@link Loader} for accessing or loading map from file.
+	 *
+	 * @since 1.6.16
+	 */
+	@Override
+	Loader load(String file);
+
+
+	/**
+	 * opens a new map with a default name in the foreground.
 	 * @since 1.2 */
-	@Deprecated
 	Map newMap();
 
-	/** @deprecated since 1.6.16 - use {@link #openMap(URL)}
+	/** @deprecated since 1.6.16 - use {@link #load(URL)}
 	 * @since 1.2 */
 	@Deprecated
 	Map newMap(URL url);
 
-	/**  @deprecated since 1.6.16 - use {@link #openUntitledMap(file)}
+	/**  @deprecated since 1.6.16 - use {@link #load(file)}
 	 * @since 1.5 */
 	@Deprecated
 	public Map newMapFromTemplate(File templateFile);
-
-	/** opens a new map with a default name in the foreground.
-	 * @since 1.6.16 */
-	Map openMap();
-
-	/** opens a new map for url in the foreground if it isn't opened already.
-	 * @since 1.6.16 */
-	Map openMap(URL url);
-
-	/** opens a new map for url in the foreground if it isn't opened already.
-	 * @since 1.6.16 */
-	Map openMap(File file);
-
-	/** opens a new map based on given template.
-	 * @since 1.5 */
-	public Map openUntitledMap(File templateFile);
 
 	/** a value of 1 means 100%.
 	 * @since 1.2 */

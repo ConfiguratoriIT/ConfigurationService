@@ -763,25 +763,24 @@ implements IExtension, NodeChangeAnnouncer{
 	/**@throws XMLException
 	 * @deprecated -- use MapIO*/
 	@Deprecated
-	public boolean openMap(final URL url) throws FileNotFoundException, XMLParseException,IOException, URISyntaxException, XMLException{
-        	final IMapViewManager mapViewManager = Controller.getCurrentController().getMapViewManager();
-        	if (mapViewManager.tryToChangeToMapView(url))
-        		return false;
-        	try {
-        	if (AddOnsController.getController().installIfAppropriate(url))
-        		return false;
-        	Controller.getCurrentController().getViewController().setWaitingCursor(true);
-        	final MapModel newModel = new MapModel();
-        	UrlManager.getController().loadCatchExceptions(url, newModel);
-        	newModel.setReadOnly(true);
-        	newModel.setSaved(true);
-        	fireMapCreated(newModel);
-        	createMapView(newModel);
-        	return true;
-        }
-        finally {
-        	Controller.getCurrentController().getViewController().setWaitingCursor(false);
-        }
+	public void openMap(final URL url) throws FileNotFoundException, XMLParseException,IOException, URISyntaxException, XMLException{
+		if (AddOnsController.getController().installIfAppropriate(url))
+			return;
+		final IMapViewManager mapViewManager = Controller.getCurrentController().getMapViewManager();
+		if (mapViewManager.tryToChangeToMapView(url))
+			return;
+		try {
+			Controller.getCurrentController().getViewController().setWaitingCursor(true);
+			final MapModel newModel = new MapModel();
+			UrlManager.getController().loadCatchExceptions(url, newModel);
+			newModel.setReadOnly(true);
+			newModel.setSaved(true);
+			fireMapCreated(newModel);
+			createMapView(newModel);
+		}
+		finally {
+			Controller.getCurrentController().getViewController().setWaitingCursor(false);
+		}
 	}
 
 
@@ -801,17 +800,11 @@ implements IExtension, NodeChangeAnnouncer{
 		Controller.getCurrentController().getMapViewManager().newMapView(mapModel, Controller.getCurrentModeController());
 	}
 
-	public MapModel openMap() {
-		final MapModel newModel = createModel();
-		fireMapCreated(newModel);
-		createMapView(newModel);
-		return newModel;
-	}
-
-	public MapModel createModel() {
+	public MapModel newMap() {
 		final MapModel mindMapMapModel = new MapModel();
 		mindMapMapModel.createNewRoot();
 		fireMapCreated(mindMapMapModel);
+		createMapView(mindMapMapModel);
 		return mindMapMapModel;
 	}
 

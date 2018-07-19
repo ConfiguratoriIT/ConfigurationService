@@ -114,12 +114,12 @@ public class MMapIO extends MapIO{
 	public NodeModel loadTree(MapModel map, File file) throws XMLParseException, IOException {
 		return fileManager.loadTree(map, file);
     }
-	public MapModel openUntitledMap() {
-		return fileManager.openUntitledMap();
+	public MapModel newMapFromDefaultTemplate() {
+		return fileManager.newMapFromDefaultTemplate();
     }
-	public boolean openUntitledMap(URL url) throws FileNotFoundException, IOException,
+	public void newMap(URL url) throws FileNotFoundException, IOException,
 	URISyntaxException, XMLException {
-		return mapController.openUntitledMap(url);
+		mapController.newMap(url);
 	}
 	public MapModel createUntitledMap(URL url){
 		try {
@@ -140,15 +140,15 @@ public class MMapIO extends MapIO{
 		}
 	}
 	@Override
-	public boolean openMap(URL url) throws FileNotFoundException, IOException, URISyntaxException, XMLException {
-		return mapController.openMap(url);
+	public void openMap(URL url) throws FileNotFoundException, IOException, URISyntaxException, XMLException {
+		mapController.openMap(url);
     }
-	public boolean openDocumentationMap(URL url) throws FileNotFoundException, IOException,
+	public void openDocumentationMap(URL url) throws FileNotFoundException, IOException,
             URISyntaxException, XMLException {
-	    return mapController.openDocumentationMap(url);
+	    mapController.openDocumentationMap(url);
     }
-	public boolean restoreCurrentMap() throws FileNotFoundException, IOException, URISyntaxException, XMLException {
-	    return mapController.restoreCurrentMap();
+	public void restoreCurrentMap() throws FileNotFoundException, IOException, URISyntaxException, XMLException {
+	    mapController.restoreCurrentMap();
     }
 
 }
