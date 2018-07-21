@@ -85,9 +85,11 @@ public class FormulaUtils {
 			if (ENABLE_CACHING) {
 				final FormulaCache formulaCache = getFormulaCache(nodeModel.getMap());
 				Object value = formulaCache.get(nodeModel, text);
-				if (! formulaCache.containsCachedValue(nodeModel, text)) {
+				if (value == null) {
 					try {
 						value = ScriptingEngine.executeScript(nodeModel, text, scriptContext, restrictedPermissions);
+						if(value == null)
+							throw new ExecuteScriptException("Null pointer returned by formula");
 						formulaCache.put(nodeModel, text, value);
 						if (DEBUG_FORMULA_EVALUATION)
 						    System.err.println("eval: cache miss: recalculated: " + text);
