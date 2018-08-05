@@ -9,9 +9,10 @@ import org.apache.commons.lang.StringUtils;
 import org.freeplane.core.util.Compat;
 import org.freeplane.core.util.HtmlUtils;
 import org.freeplane.core.util.LogUtils;
+import org.freeplane.features.explorer.mindmapmode.AccessedNodes;
 import org.freeplane.features.map.NodeModel;
 
-public class ScriptContext {
+public class ScriptContext implements AccessedNodes{
 	private static final class NodeWrapper {
 		private final NodeModel nodeModel;
 		private final String script;
@@ -103,22 +104,31 @@ public class ScriptContext {
 		}
 	}
 
-    public void accessNode(final NodeModel accessedNode) {
+    @Override
+	public void accessNode(final NodeModel accessedNode) {
         final NodeWrapper nodeWrapper = stackLastLogNull("accessNode");
         if (nodeWrapper != null)
             FormulaUtils.accessNode(nodeWrapper.getNodeModel(), accessedNode);
     }
 
-    public void accessBranch(final NodeModel accessedNode) {
+    @Override
+	public void accessBranch(final NodeModel accessedNode) {
         final NodeWrapper nodeWrapper = stackLastLogNull("accessBranch");
         if (nodeWrapper != null)
             FormulaUtils.accessBranch(nodeWrapper.getNodeModel(), accessedNode);
     }
 
+	@Override
 	public void accessAll() {
 		final NodeWrapper nodeWrapper = stackLastLogNull("accessAll");
 		if (nodeWrapper != null)
 		    FormulaUtils.accessAll(nodeWrapper.getNodeModel());
+	}
+	@Override
+	public void accessGlobalNode() {
+		final NodeWrapper nodeWrapper = stackLastLogNull("accessGlobalNode");
+		if (nodeWrapper != null)
+		    FormulaUtils.accessGlobalNode(nodeWrapper.getNodeModel());
 	}
 
     @SuppressWarnings("unused")
