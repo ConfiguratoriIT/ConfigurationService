@@ -17,11 +17,13 @@ class NodeAlias implements IExtension {
 	static void setAlias(NodeModel node, String alias) {
 		if(alias == null || alias.isEmpty())
 			removeAlias(node);
-		else
-			node.putExtension(new NodeAlias(alias));
+		else {
+			NodeAlias a = new NodeAlias(alias);
+			node.putExtension(a);
+			NodeAliases.of(node.getMap()).add(a, node.createID());
+		}
 	}
 	static void removeAlias(NodeModel node) {
 		node.removeExtension(NodeAlias.class);
 	}
-
 }
