@@ -169,6 +169,22 @@ public class Launcher {
 		return this;
 	}
 
+    /**
+     * Sets user configuration directory (without the version).
+     */
+	public Launcher userDirectory(File userDirectory) {
+		return userDirectory(userDirectory.getAbsolutePath());
+	}
+
+    /**
+     * Sets user configuration directory (without the version).
+     */
+	public Launcher userDirectory(String userDirectory) {
+        System.setProperty("org.freeplane.userfpdir", userDirectory);
+        System.setProperty("org.freeplane.old_userfpdir", userDirectory);
+		return this;
+	}
+
 	private Launcher(final File freeplaneInstallationDirectory) {
 		ensureSingleInstance();
 		this.freeplaneInstallationDirectory = freeplaneInstallationDirectory;

@@ -1,4 +1,4 @@
-package org.freeplane.features.explorer.mindmapmode;
+package org.freeplane.features.explorer;
 
 import java.util.Collection;
 
@@ -27,5 +27,12 @@ class Command {
 	private NodeMatcher createMatcher() {
 		return new NodeMatcher(textController, searchedString);
 	}
+
+	@Override
+	public String toString() {
+		return "Command [operator=" + operator + ", searchedString=" + searchedString + "]";
+	}
+
+
 
 }
